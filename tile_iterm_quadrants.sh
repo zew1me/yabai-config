@@ -23,14 +23,14 @@ fi
 OFFSET=${1:-0}
 
 # Query all iTerm2 windows and get their IDs
-# Filter for iTerm2 app, skip OFFSET windows, then get the next 4 window IDs
+# Filter for iTerm2 app with standard window role, skip OFFSET windows, then get the next 4 window IDs
 if [ "$OFFSET" -eq 0 ]; then
     window_ids=$(yabai -m query --windows | \
-        jq -r '.[] | select(.app=="iTerm2") | .id' | \
+        jq -r '.[] | select(.app=="iTerm2" and .role=="AXWindow") | .id' | \
         head -n 4)
 else
     window_ids=$(yabai -m query --windows | \
-        jq -r '.[] | select(.app=="iTerm2") | .id' | \
+        jq -r '.[] | select(.app=="iTerm2" and .role=="AXWindow") | .id' | \
         tail -n +$((OFFSET + 1)) | \
         head -n 4)
 fi
@@ -65,6 +65,8 @@ while IFS= read -r window_id; do
         position=${POSITIONS[$count]}
         echo "Placing window $window_id at position $position"
         yabai -m window "$window_id" --grid "$position"
+        # Focus the window to make it visible
+        yabai -m window "$window_id" --focus
         ((count++))
     fi
 done <<< "$window_ids"
