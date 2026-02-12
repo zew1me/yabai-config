@@ -6,9 +6,6 @@
 # cmd + 4: Tile first 4 iTerm windows
 KEYBINDING="${KEYBINDING:-cmd - 4}"
 
-# Alternative if conflicts exist:
-# KEYBINDING="cmd + shift - 4"
-
 # Path to the tiling script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TILE_SCRIPT="${SCRIPT_DIR}/tile_iterm_quadrants.sh"

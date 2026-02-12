@@ -55,6 +55,64 @@ Windows returned by `yabai -m query --windows` are in **most-recently-focused or
 - Windows 5-8 are the next 4 most recently used
 - Ordering changes as you switch between windows
 
+## Troubleshooting
+
+### Keybinding Not Working
+
+**Problem**: The keybinding doesn't trigger the tiling script.
+
+**Common Causes**:
+1. **Accessibility Permissions Missing**: skhd needs accessibility permissions to capture keystrokes
+   - System Settings → Privacy & Security → Accessibility
+   - **Note**: skhd is a command-line tool and won't appear in the Accessibility UI when added manually
+   - **Solution**: Use a LaunchAgent to run skhd (see setup below)
+
+2. **skhd Not Running**: Check if skhd is active
+   ```bash
+   ps aux | grep skhd | grep -v grep
+   ```
+
+3. **Config Not Loaded**: Reload skhd configuration
+   ```bash
+   skhd --reload
+   ```
+
+### Testing the Script Manually
+
+You can test the tiling script directly:
+```bash
+/Users/nigel.stuke/repos/nigel-upstart/yabai-config/tile_iterm_quadrants.sh
+```
+
+### Setting Up skhd with Accessibility Permissions
+
+skhd is a command-line tool that requires accessibility permissions but cannot be added to System Settings manually. The solution is to run it via a LaunchAgent:
+
+**LaunchAgent is already configured at**: `~/Library/LaunchAgents/com.koekeishiya.skhd.plist`
+
+To verify it's running:
+```bash
+launchctl list | grep skhd
+ps aux | grep '[s]khd'
+```
+
+To restart skhd:
+```bash
+launchctl unload ~/Library/LaunchAgents/com.koekeishiya.skhd.plist
+launchctl load ~/Library/LaunchAgents/com.koekeishiya.skhd.plist
+```
+
+**Logs**: Check `/tmp/skhd.out.log` and `/tmp/skhd.err.log` for debugging.
+
+### Alternative Keybindings
+
+If cmd+4 conflicts with other apps, edit `~/.config/skhd/skhdrc` and try:
+- `cmd + alt - t` (Command + Option + T)
+- `ctrl + alt - t` (Control + Option + T)
+- `cmd + shift - t` (Command + Shift + T)
+
+Then reload with `pkill -USR1 skhd`.
+
 ## References
 
 Key documentation sources:

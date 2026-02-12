@@ -21,12 +21,27 @@ brew install koekeishiya/formulae/skhd
 brew install jq
 ```
 
-Grant Accessibility permissions to both yabai and skhd in:
+Grant Accessibility permissions to yabai in:
 **System Settings → Privacy & Security → Accessibility**
+
+**Note about skhd**: skhd is a command-line tool and cannot be manually added to Accessibility. It must run via LaunchAgent (handled by setup script below).
 
 ## Quick Start
 
-### 1. Enable the Keybinding
+### 1. Set Up skhd LaunchAgent
+
+**This is required** for skhd to receive accessibility permissions:
+
+```bash
+./setup_skhd_autostart.sh
+```
+
+This will:
+- Create a LaunchAgent that starts skhd automatically on login
+- Enable skhd to receive accessibility permissions
+- Set up logging to `/tmp/skhd.out.log` and `/tmp/skhd.err.log`
+
+### 2. Enable the Keybinding
 
 ```bash
 ./enable_keybinding.sh
@@ -34,10 +49,10 @@ Grant Accessibility permissions to both yabai and skhd in:
 
 This will:
 - Add the keybinding to `~/.config/skhd/skhdrc`
-- Start or restart skhd
+- Reload skhd configuration
 - Default keybinding: `⌘4`
 
-### 2. Use It
+### 3. Use It
 
 Open at least 4 iTerm2 windows, then press `⌘4` (from any application):
 
@@ -51,7 +66,7 @@ Open at least 4 iTerm2 windows, then press `⌘4` (from any application):
 
 The first 4 windows are selected by most-recently-focused order, and iTerm is brought to the front automatically.
 
-### 3. Disable (Optional)
+### 4. Disable (Optional)
 
 To remove the keybinding:
 
@@ -116,23 +131,62 @@ The grid format is `rows:cols:start-x:start-y:width:height`, where the screen is
 
 **Window Ordering:** Windows are returned by yabai in most-recently-focused order (see [yabai issue #944](https://github.com/koekeishiya/yabai/issues/944)), so the "first 4" windows are the 4 most recently active windows.
 
+## Managing skhd
+
+### Check Status
+
+```bash
+# Check if skhd is running
+ps aux | grep '[s]khd'
+launchctl list | grep skhd
+
+# View logs
+tail -f /tmp/skhd.out.log  # Output
+tail -f /tmp/skhd.err.log  # Errors
+```
+
+### Restart skhd
+
+```bash
+# Full restart
+launchctl unload ~/Library/LaunchAgents/com.koekeishiya.skhd.plist
+launchctl load ~/Library/LaunchAgents/com.koekeishiya.skhd.plist
+
+# Or just reload config
+pkill -USR1 skhd
+```
+
 ## Troubleshooting
 
 ### Keybinding not working
 
-1. Check if skhd is running: `pgrep skhd`
-2. Restart skhd manually: `killall skhd && skhd &`
-3. Verify keybinding: `cat ~/.config/skhd/skhdrc`
-4. Make sure you've added the **actual binary** to Accessibility:
-   - Find the real path: `ls -la /opt/homebrew/bin/skhd`
-   - Add `/opt/homebrew/Cellar/skhd/VERSION/bin/skhd` to Accessibility permissions
+1. **Check if skhd is running:**
+   ```bash
+   ps aux | grep '[s]khd'
+   launchctl list | grep skhd
+   ```
+
+2. **Verify LaunchAgent is set up:**
+   ```bash
+   ls -la ~/Library/LaunchAgents/com.koekeishiya.skhd.plist
+   ```
+   If missing, run: `./setup_skhd_autostart.sh`
+
+3. **Check logs for errors:**
+   ```bash
+   tail -20 /tmp/skhd.err.log
+   ```
+
+4. **Verify keybinding:**
+   ```bash
+   cat ~/.config/skhd/skhdrc | grep -A 2 "yabai-iterm-quadrant"
+   ```
 
 ### Accessibility permissions
 
-Make sure both yabai and skhd have Accessibility permissions:
-- System Settings → Privacy & Security → Accessibility
-- Add `/opt/homebrew/bin/yabai`
-- Add `/opt/homebrew/bin/skhd`
+**yabai**: Add `/opt/homebrew/bin/yabai` to System Settings → Privacy & Security → Accessibility
+
+**skhd**: Must run via LaunchAgent (not manually added to Accessibility). Run `./setup_skhd_autostart.sh` to set this up. After setup, restart your Mac for permissions to take effect.
 
 ### Windows not tiling
 
@@ -149,7 +203,8 @@ Make sure both yabai and skhd have Accessibility permissions:
 ├── config.sh                    # Configuration (keybinding, paths)
 ├── tile_iterm_quadrants.sh      # Main tiling script
 ├── enable_keybinding.sh         # Add keybinding to skhd
-└── disable_keybinding.sh        # Remove keybinding from skhd
+├── disable_keybinding.sh        # Remove keybinding from skhd
+└── setup_skhd_autostart.sh      # Set up skhd LaunchAgent (one-time)
 ```
 
 ## Resources
