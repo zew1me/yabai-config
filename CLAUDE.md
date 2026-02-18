@@ -8,7 +8,7 @@ This project provides scripting to tile the first four iTerm windows into a 2x2 
 
 - **Float Mode Compatibility**: Uses yabai's grid placement without switching to BSP layout
 - **Simple Keybinding**: Command+4 tiles the first 4 most-recently-focused iTerm windows
-- **Third Snap Keybindings**: Command+Control+Left/Right snaps focused window to left/right third
+- **Side Snap Keybindings**: Command+Control+Left/Right snaps focused window to left/right side
 - **Global Hotkey**: Works from any application, brings iTerm windows to front
 - **Enable/Disable Scripts**: Easy scripts to add or remove the keybinding
 - **One-Handed Operation**: Keybinding designed for single-hand activation
@@ -30,7 +30,7 @@ Yabai uses the format `<rows>:<cols>:<start-x>:<start-y>:<width>:<height>` for g
 1. **tile_iterm_quadrants.sh**: Main script that queries iTerm windows and places them in quadrants
    - Accepts optional offset parameter (default: 0 for windows 1-4)
    - Brings iTerm to front after tiling
-2. **snap_current_window_third.sh**: Snaps currently focused window to left or right third
+2. **snap_current_window_side.sh**: Snaps currently focused window to left or right side
    - Accepts `left` or `right` argument
    - Uses yabai grid placement `1:3:0:0:1:1` or `1:3:2:0:1:1`
 3. **enable_keybinding.sh**: Adds/updates managed keybinding block in skhd configuration
@@ -117,9 +117,9 @@ If cmd+4 conflicts with other apps, edit `~/.config/skhd/skhdrc` and try:
 
 Then reload with `pkill -USR1 skhd`.
 
-For third snapping, configure in `config.sh`:
-- `KEYBINDING_THIRD_LEFT`
-- `KEYBINDING_THIRD_RIGHT`
+For side snapping, configure in `config.sh`:
+- `KEYBINDING_SNAP_LEFT`
+- `KEYBINDING_SNAP_RIGHT`
 
 ## References
 
