@@ -5,6 +5,7 @@ Automatically tile the first 4 iTerm2 windows into a 2×2 quadrant layout using 
 ## Features
 
 - 🎯 **Simple quadrant tiling** - Tile first 4 iTerm windows with one keystroke
+- ↔️ **Third snap shortcuts** - Snap focused window to left/right third
 - 🎨 **Float mode compatible** - No need to switch to BSP layout
 - ⌨️ **One-handed keybinding** - `⌘4` (configurable)
 - 🔧 **Easy enable/disable** - Simple scripts to manage keybinding
@@ -41,16 +42,19 @@ This will:
 - Enable skhd to receive accessibility permissions
 - Set up logging to `/tmp/skhd.out.log` and `/tmp/skhd.err.log`
 
-### 2. Enable the Keybinding
+### 2. Enable the Keybindings
 
 ```bash
 ./enable_keybinding.sh
 ```
 
 This will:
-- Add the keybinding to `~/.config/skhd/skhdrc`
+- Add keybindings to `~/.config/skhd/skhdrc`
 - Reload skhd configuration
-- Default keybinding: `⌘4`
+- Default keybindings:
+  - `⌘4` for iTerm quadrant tiling
+  - `⌘⌃←` for left-third snap (focused window)
+  - `⌘⌃→` for right-third snap (focused window)
 
 ### 3. Use It
 
@@ -65,6 +69,10 @@ Open at least 4 iTerm2 windows, then press `⌘4` (from any application):
 ```
 
 The first 4 windows are selected by most-recently-focused order, and iTerm is brought to the front automatically.
+
+For any focused window (any app), use:
+- `⌘⌃←` to snap to the left third
+- `⌘⌃→` to snap to the right third
 
 ### 4. Disable (Optional)
 
@@ -86,6 +94,10 @@ KEYBINDING="cmd - 4"
 
 # Alternative: cmd + shift + 4
 # KEYBINDING="cmd + shift - 4"
+
+# Third snap defaults
+KEYBINDING_THIRD_LEFT="cmd + ctrl - left"
+KEYBINDING_THIRD_RIGHT="cmd + ctrl - right"
 ```
 
 Then run `./enable_keybinding.sh` again to apply.
@@ -110,6 +122,10 @@ You can also run the tiling script directly without a keybinding:
 # Or specify an offset to tile different windows
 # Tile windows 5-8
 ./tile_iterm_quadrants.sh 4
+
+# Snap focused window to thirds directly
+./snap_current_window_third.sh left
+./snap_current_window_third.sh right
 ```
 
 ## How It Works
@@ -130,6 +146,14 @@ The `tile_iterm_quadrants.sh` script:
 The grid format is `rows:cols:start-x:start-y:width:height`, where the screen is divided into a 2×2 grid and each window occupies one cell.
 
 **Window Ordering:** Windows are returned by yabai in most-recently-focused order (see [yabai issue #944](https://github.com/koekeishiya/yabai/issues/944)), so the "first 4" windows are the 4 most recently active windows.
+
+The `snap_current_window_third.sh` script:
+
+1. Accepts `left` or `right`
+2. Targets the currently focused window
+3. Uses yabai grid placement:
+   - Left third: `1:3:0:0:1:1`
+   - Right third: `1:3:2:0:1:1`
 
 ## Managing skhd
 
@@ -182,6 +206,12 @@ pkill -USR1 skhd
    cat ~/.config/skhd/skhdrc | grep -A 2 "yabai-iterm-quadrant"
    ```
 
+5. **If third-snap hotkeys conflict with another app:**
+   - Edit `config.sh` and change:
+     - `KEYBINDING_THIRD_LEFT`
+     - `KEYBINDING_THIRD_RIGHT`
+   - Re-run: `./enable_keybinding.sh`
+
 ### Accessibility permissions
 
 **yabai**: Add `/opt/homebrew/bin/yabai` to System Settings → Privacy & Security → Accessibility
@@ -202,6 +232,7 @@ pkill -USR1 skhd
 ├── CLAUDE.md                    # Project documentation for Claude
 ├── config.sh                    # Configuration (keybinding, paths)
 ├── tile_iterm_quadrants.sh      # Main tiling script
+├── snap_current_window_third.sh # Snap focused window to display thirds
 ├── enable_keybinding.sh         # Add keybinding to skhd
 ├── disable_keybinding.sh        # Remove keybinding from skhd
 └── setup_skhd_autostart.sh      # Set up skhd LaunchAgent (one-time)
