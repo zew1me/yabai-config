@@ -152,8 +152,8 @@ The `snap_current_window_side.sh` script:
 1. Accepts `left` or `right`
 2. Targets the currently focused window
 3. Uses yabai grid placement:
-   - Left: `1:3:0:0:1:1`
-   - Right: `1:3:2:0:1:1`
+   - Left: `1:4:0:0:1:1`
+   - Right: `1:4:3:0:1:1`
 
 ## Managing skhd
 

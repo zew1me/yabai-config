@@ -32,7 +32,7 @@ Yabai uses the format `<rows>:<cols>:<start-x>:<start-y>:<width>:<height>` for g
    - Brings iTerm to front after tiling
 2. **snap_current_window_side.sh**: Snaps currently focused window to left or right side
    - Accepts `left` or `right` argument
-   - Uses yabai grid placement `1:3:0:0:1:1` or `1:3:2:0:1:1`
+   - Uses yabai grid placement `1:4:0:0:1:1` or `1:4:3:0:1:1`
 3. **enable_keybinding.sh**: Adds/updates managed keybinding block in skhd configuration
 4. **disable_keybinding.sh**: Removes the managed keybinding block from skhd configuration
 5. **config.sh**: Configuration file for keybindings and script paths
