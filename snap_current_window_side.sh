@@ -13,10 +13,10 @@ SIDE="${1:-}"
 
 case "$SIDE" in
     left)
-        GRID="1:3:0:0:1:1"
+        GRID="1:4:0:0:1:1"
         ;;
     right)
-        GRID="1:3:2:0:1:1"
+        GRID="1:4:3:0:1:1"
         ;;
     *)
         echo "Usage: $0 [left|right]"
