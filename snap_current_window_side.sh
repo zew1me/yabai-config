@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Snap the currently focused window to the left or right third of the display.
+# Snap the currently focused window to the left or right side of the display.
 #
-# Usage: snap_current_window_third.sh [left|right]
+# Usage: snap_current_window_side.sh [left|right]
 
 if ! command -v yabai &> /dev/null; then
     echo "Error: yabai is not installed or not in PATH"
