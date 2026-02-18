@@ -5,6 +5,7 @@
 
 PLIST_PATH="$HOME/Library/LaunchAgents/com.koekeishiya.skhd.plist"
 SKHD_BIN="$(which skhd)"
+SKHD_CONFIG="${HOME}/.config/skhd/skhdrc"
 
 if [ -z "$SKHD_BIN" ]; then
     echo "Error: skhd not found in PATH. Install with: brew install skhd"
@@ -15,6 +16,12 @@ echo "Setting up skhd to start at login..."
 
 # Create LaunchAgents directory if it doesn't exist
 mkdir -p "$HOME/Library/LaunchAgents"
+mkdir -p "$(dirname "$SKHD_CONFIG")"
+
+# Ensure skhd config exists so skhd can start cleanly on first run.
+if [ ! -f "$SKHD_CONFIG" ]; then
+    touch "$SKHD_CONFIG"
+fi
 
 # Unload existing plist if loaded
 if launchctl list | grep -q com.koekeishiya.skhd; then
@@ -33,6 +40,8 @@ cat > "$PLIST_PATH" << EOF
     <key>ProgramArguments</key>
     <array>
         <string>${SKHD_BIN}</string>
+        <string>-c</string>
+        <string>${SKHD_CONFIG}</string>
     </array>
     <key>EnvironmentVariables</key>
     <dict>
