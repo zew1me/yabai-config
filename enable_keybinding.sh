@@ -32,17 +32,17 @@ cat >> "$SKHD_CONFIG" << EOF
 $MARKER_START
 # Tile first 4 iTerm windows into quadrants
 $KEYBINDING : "$TILE_SCRIPT"
-# Snap focused window to left third
-$KEYBINDING_THIRD_LEFT : "$THIRD_SNAP_SCRIPT" left
-# Snap focused window to right third
-$KEYBINDING_THIRD_RIGHT : "$THIRD_SNAP_SCRIPT" right
+# Snap focused window to left
+$KEYBINDING_SNAP_LEFT : "$SNAP_SIDE_SCRIPT" left
+# Snap focused window to right
+$KEYBINDING_SNAP_RIGHT : "$SNAP_SIDE_SCRIPT" right
 $MARKER_END
 EOF
 
 echo "✓ Keybindings applied to $SKHD_CONFIG"
 echo "  Quadrants:   $KEYBINDING -> $TILE_SCRIPT"
-echo "  Left third:  $KEYBINDING_THIRD_LEFT -> $THIRD_SNAP_SCRIPT left"
-echo "  Right third: $KEYBINDING_THIRD_RIGHT -> $THIRD_SNAP_SCRIPT right"
+echo "  Left snap:   $KEYBINDING_SNAP_LEFT -> $SNAP_SIDE_SCRIPT left"
+echo "  Right snap:  $KEYBINDING_SNAP_RIGHT -> $SNAP_SIDE_SCRIPT right"
 echo ""
 echo "Restarting skhd..."
 
@@ -65,5 +65,5 @@ fi
 echo ""
 echo "Setup complete!"
 echo "  $KEYBINDING: tile first 4 iTerm windows"
-echo "  $KEYBINDING_THIRD_LEFT: snap focused window to left third"
-echo "  $KEYBINDING_THIRD_RIGHT: snap focused window to right third"
+echo "  $KEYBINDING_SNAP_LEFT: snap focused window to left"
+echo "  $KEYBINDING_SNAP_RIGHT: snap focused window to right"
